@@ -28,12 +28,7 @@ RUN set -x \
 	&& wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
 	&& wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture).asc" \
 	&& export GNUPGHOME="$(mktemp -d)" \
-	&& { for server in ha.pool.sks-keyservers.net \
-              hkp://p80.pool.sks-keyservers.net:80 \
-              keyserver.ubuntu.com \
-              hkp://keyserver.ubuntu.com:80 \
-              pgp.mit.edu; do  } \ 
-	&& gpg --batch --keyserver "$server" --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
+	&& gpg --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
 	&& gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
 	&& { command -v gpgconf > /dev/null && gpgconf --kill all || :; } \
 	&& rm -rf "$GNUPGHOME" /usr/local/bin/gosu.asc \
@@ -69,12 +64,7 @@ RUN set -ex; \
 # uid                  PostgreSQL Debian Repository
 	key='B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8'; \
 	export GNUPGHOME="$(mktemp -d)"; \
-	for server in ha.pool.sks-keyservers.net \
-              hkp://p80.pool.sks-keyservers.net:80 \
-              keyserver.ubuntu.com \
-              hkp://keyserver.ubuntu.com:80 \
-              pgp.mit.edu; do \	
-	gpg --batch "$server" --recv-keys "$key"; \
+	gpg --batch hkp://keyserver.ubuntu.com:80 --recv-keys "$key"; \
 	gpg --batch --export "$key" > /etc/apt/trusted.gpg.d/postgres.gpg; \
 	command -v gpgconf > /dev/null && gpgconf --kill all; \
 	rm -rf "$GNUPGHOME"; \
